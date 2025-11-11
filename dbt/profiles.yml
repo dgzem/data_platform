@@ -1,0 +1,12 @@
+data_layer_profile:
+  target: dev
+  outputs:
+    dev:
+      type: postgres
+      host: postgres
+      user: dl_admin
+      password: dl_admin
+      dbname: data_layer_db
+      schema: pipeline
+      port: 5432
+      threads: 4

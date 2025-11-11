@@ -1,0 +1,62 @@
+version: 2
+
+models:
+  - name: tb_fact_customer_metrics
+    description: >
+      Fact table summarizing transactional metrics for each customer, including
+      total transactions, total quantity, total revenue, and purchase timelines.
+      This table is used for customer-level performance and behavioral analysis.
+
+    columns:
+      - name: customer_id
+        description: "Unique identifier for the customer."
+        tests:
+          - not_null
+          - unique
+          - relationships:
+              to: ref('tb_dim_customers_transactions')
+              field: customer_id
+
+      - name: total_transactions
+        description: "Total number of transactions made by the customer."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "total_transactions >= 0"
+
+      - name: total_quantity
+        description: "Sum of all items purchased by the customer."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "total_quantity >= 0"
+
+      - name: total_revenue
+        description: "Total monetary value of all purchases made by the customer."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "total_revenue >= 0"
+
+      - name: average_order_value
+        description: "Average value per order, calculated as total_revenue / total_transactions."
+        tests:
+          - dbt_utils.expression_is_true:
+              expression: "average_order_value >= 0"
+
+      - name: first_purchase_date
+        description: "Earliest recorded transaction date for the customer."
+        tests:
+          - not_null
+
+      - name: last_purchase_date
+        description: "Most recent transaction date for the customer."
+        tests:
+          - not_null
+          - dbt_utils.expression_is_true:
+              expression: "last_purchase_date >= first_purchase_date"
+
+      - name: load_datetime
+        description: "Timestamp when the data was last loaded into the fact table."
+        tests:
+          - not_null

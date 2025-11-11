@@ -1,0 +1,75 @@
+services:
+  postgres:
+    container_name: postgres_container
+    image: postgres:14.17
+    ports:
+      - 5432:5432
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - ./postgres/data:/var/lib/postgresql/data
+      - ./postgres/init:/docker-entrypoint-initdb.d
+    networks:
+      - my-network
+  
+  dbt:
+    build:
+      context: .
+      dockerfile: Dockerfile.dbt
+    container_name: dbt_container
+    working_dir: /app/dbt/data_layer_project 
+    volumes:
+      - ./dbt/data_layer_project:/app/dbt/data_layer_project
+      - ./dbt/profiles.yml:/app/dbt/profiles.yml
+    depends_on:
+      - postgres
+    networks:
+      - my-network
+    environment:
+      DBT_PROFILES_DIR: /app/dbt
+    command: > 
+      bash -c "
+      echo 'Waiting for Database Readiness' &&
+      sleep 20 &&
+      dbt deps && 
+      dbt debug &&
+      dbt run"
+
+
+  airflow:
+    container_name: airflow_container
+    build:
+      context: .
+      dockerfile: Dockerfile.airflow
+    ports:
+      - 8000:8080
+    environment:
+      AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: ${AIRFLOW__DATABASE__SQL_ALCHEMY_CONN}
+      DB_DL_USER: ${DB_DL_USER}
+      DB_DL_PASSWORD: ${DB_DL_PASSWORD}
+      DB_DL_HOST: ${DB_DL_HOST}
+      DB_DL_NAME: ${DB_DL_NAME}
+      DB_DL_PORT: ${DB_DL_PORT}
+      
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./airflow/requirements.txt:/requirements.txt
+    depends_on:
+      - postgres
+      - dbt
+    networks:
+      - my-network
+    command: > 
+      bash -c "
+        echo 'Waiting for Database Readiness' &&
+        sleep 20 &&
+        airflow db migrate &&
+        echo 'Starting Airflow Standalone...' &&
+        airflow standalone
+      "
+
+networks:
+  my-network:
+    driver: bridge

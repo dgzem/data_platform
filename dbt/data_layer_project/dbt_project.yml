@@ -1,0 +1,16 @@
+name: 'data_layer_project'
+version: '1.0.0'
+config-version: 2
+
+profile: 'data_layer_profile'
+
+model-paths: ["models"]
+
+models:
+  data_layer_project:
+    dimension:
+      +schema: dimension
+      +materialized: table
+    fact:
+      +schema: fact
+      +materialized: table

@@ -1,0 +1,24 @@
+version: 2
+
+models:
+  - name: tb_dim_customers_transactions
+    description: "Dimension table containing cleaned customer transactions."
+    columns:
+      - name: transaction_id
+        description: "Unique identifier for each transaction."
+        tests:
+          - not_null
+          - unique
+
+      - name: customer_id
+        description: "Unique customer identifier."
+        tests:
+          - not_null
+
+      - name: transaction_date
+        description: "Transaction date should always be valid."
+        tests:
+          - not_null
+          - accepted_values:
+              values: ['2023-07-11', '2023-07-12', '2023-07-13']
+          
