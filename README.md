@@ -71,10 +71,12 @@ docker-compose up --build
 
 1. Getting the credentials
 Once services are up and running, since Airflow service is a standalone version, scroll up until you see this image to grab the password of the **admin** user:
+
 <img width="915" height="362" alt="image" src="https://github.com/user-attachments/assets/a957a49e-13b4-472b-b661-f162bcd087b0" />
 
 2. Running the pipeline
 Go to data_platform_pipeline and trigger the dag:
+
 <img width="947" height="228" alt="image" src="https://github.com/user-attachments/assets/43f4b7b0-9a6b-41ee-809a-9f3944cc8fac" />
 
 
