@@ -12,10 +12,11 @@ The pipeline extracts, loads, and transforms customer transaction data into a Po
 - [Setup](#setup)  
 - [Environment Variables](#environment-variables)  
 - [Running the Pipeline](#running-the-pipeline)  
-- [Airflow Login](#airflow-ui)  
+- [Airflow](#airflow)  
 ---
 
 ## Project Structure
+```
 ├── airflow/
 │ ├── dags/ # Airflow DAG files
 │ ├── requirements.txt # Python dependencies for Airflow
@@ -29,7 +30,7 @@ The pipeline extracts, loads, and transforms customer transaction data into a Po
 ├── docker-compose.yml
 └── README.md
 └── .env # Environment variables for Airflow
-
+```
 
 ## Requirements
 
@@ -45,9 +46,11 @@ The pipeline extracts, loads, and transforms customer transaction data into a Po
 ```bash
 git clone <repo-url>
 cd <repo-folder>
+```
 
 ## Environment Variables
 At the root of the project, create a .env file with the following variables:
+
 ```
 AIRFLOW__DATABASE__SQL_ALCHEMY_CONN = postgresql+psycopg2://airflow_admin:airflow_admin@postgres:5432/airflow_db
 POSTGRES_DB = db
@@ -63,11 +66,12 @@ DB_DL_PORT=5432
 
 ## Running the Pipeline
 At the root of the project, please run
-```
+
+```bash
 docker-compose up --build
 ```
 
-## Airflow Login
+## Airflow
 
 1. Getting the credentials
 Once services are up and running, since Airflow service is a standalone version, scroll up until you see this image to grab the password of the **admin** user:
